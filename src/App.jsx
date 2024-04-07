@@ -18,7 +18,6 @@ function App() {
     setModalIsOpen(true);
     selectedPlace.current = place;
   }
-
   function handleStopRemovePlace() {
     setModalIsOpen(false);
   }
@@ -37,6 +36,7 @@ function App() {
       await updateUserPlaces([...userPlaces,selectedPlace])
     }catch(err){
       setErrorUpdatingPlaces(err.message || "Failed to update places")
+      setUserPlaces(userPlaces)
     }
   }
 
@@ -44,9 +44,14 @@ function App() {
     setUserPlaces((prevPickedPlaces) =>
       prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
     );
-
+    try{
+      await updateUserPlaces(userPlaces.filter(place=> place.id !== selectedPlace.current.id))
+    }catch(err){
+      setErrorUpdatingPlaces(err.message || "Failed to delete places")
+      setUserPlaces(userPlaces)
+    }
     setModalIsOpen(false);
-  }, []);
+  }, [userPlaces]);
 
     function handleError(){
       setErrorUpdatingPlaces(null)
