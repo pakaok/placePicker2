@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 
 import Places from "./components/Places.jsx";
 import Modal from "./components/Modal.jsx";
@@ -7,13 +7,20 @@ import logoImg from "./assets/logo.png";
 import AvailablePlaces from "./components/AvailablePlaces.jsx";
 import { fetchUserPlaces, updateUserPlaces } from "./http.js";
 import Error from "./components/Error.jsx";
+import { useFetch } from "./hooks/useFetch.js";
 function App() {
   const selectedPlace = useRef();
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState();
-  const [userPlaces, setUserPlaces] = useState([]);
-  const [error, setError] = useState("");
-  const [isFetching, setIsFetching] = useState(false);
+  // const [userPlaces, setUserPlaces] = useState([]);
+  // const [error, setError] = useState("");
+  // const [isFetching, setIsFetching] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {
+    isFetching,
+    fetchedData: userPlaces,
+    error,
+    setFetchedData: setUserPlaces,
+  } = useFetch(fetchUserPlaces, []);
 
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
@@ -22,20 +29,6 @@ function App() {
   function handleStopRemovePlace() {
     setModalIsOpen(false);
   }
-
-  useEffect(() => {
-    async function fetchPlaces() {
-      setIsFetching(true);
-      try {
-        const places = await fetchUserPlaces();
-        setUserPlaces(places);
-      } catch (err) {
-        setError(err.message || "Failed to load user places...");
-      }
-      setIsFetching(false);
-    }
-    fetchPlaces();
-  }, []);
 
   async function handleSelectPlace(selectedPlace) {
     setUserPlaces((prevPickedPlaces) => {
@@ -105,12 +98,7 @@ function App() {
         </p>
       </header>
       <main>
-        {error && (
-          <Error
-            title="Error occured"
-            message={error}
-          />
-        )}
+        {error && <Error title="Error occured" message={error} />}
         {!error && (
           <Places
             title="I'd like to visit ..."
