@@ -11,9 +11,6 @@ import { useFetch } from "./hooks/useFetch.js";
 function App() {
   const selectedPlace = useRef();
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState();
-  // const [userPlaces, setUserPlaces] = useState([]);
-  // const [error, setError] = useState("");
-  // const [isFetching, setIsFetching] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const {
     isFetching,
